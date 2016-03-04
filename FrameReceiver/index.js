@@ -44,7 +44,10 @@ var connection = ioClient.connect('http://'+server.host+':'+server.serviceport);
 udpserver.on('message', function(data, remote) {
     //if(format.isValid(data)){
         //dbWriter.write(data);
-    connection.emit('bundledFrame',data);
+    connection.emit('bundledFrame',data, function(err){
+        if(err)throw err;
+        console.log('data emitted');
+    });
         //sender.send(data);
     //}
 });
