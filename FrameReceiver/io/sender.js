@@ -4,6 +4,7 @@
 var ioClient = require("socket.io-client");
 var server = require('../server.js');
 var isConnected = false;
+
 module.exports = {
     send: function(data){
         var connection;
@@ -13,4 +14,4 @@ module.exports = {
         }
         connection.emit('bundledFrame',data);
     }
-}
+};

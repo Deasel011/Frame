@@ -42,8 +42,11 @@ udpserver.bind(PORT,HOST);
 var connection = ioClient.connect('http://'+server.host+':'+server.serviceport);
 
 udpserver.on('message', function(data, remote) {
+    var dateHex=(data[17].toString(16)+data[18].toString(16)+data[19].toString(16)+data[20].toString(16));
+    var date = parseInt(dateHex,16);
+    console.log(date);
     //if(format.isValid(data)){
-        //dbWriter.write(data);
+    dbWriter.write(date,data);
     connection.emit('bundledFrame',data, function(err){
         if(err)throw err;
         console.log('data emitted');
