@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "binary-parser": "^1.1.5",
+    "bsh-mongo-pool": "^1.0.2",
     "mongodb": "^2.1.7",
     "socket.io": "^1.4.5",
     "socket.io-client": "^1.4.5"
