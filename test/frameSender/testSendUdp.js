@@ -10,13 +10,13 @@ var PORT = 3001,
 function justRunIt(i){
     if(i%5===0&&i!==10000){console.log(i)}
 
-    if(i<1){
+    if(i<50){
         var message=randomBuffer();
         client.send(message,0,message.length,PORT,HOST,function(err,bytes){
             if(err)throw err;
 
-            //message=randomBuffer();
-            setTimeout(function(){justRunIt(i+1)},0875);
+            message=randomBuffer();
+            setTimeout(function(){justRunIt(i+1)},2000);
         });
     }
 }

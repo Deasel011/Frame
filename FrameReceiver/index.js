@@ -47,7 +47,7 @@ udpserver.on('message', function(data, remote) {
     console.log(date);
     //if(format.isValid(data)){
     dbWriter.write(date,data);
-    connection.emit('bundledFrame',data, function(err){
+    connection.emit('bundledFrame',{date: date, data: data}, function(err){
         if(err)throw err;
         console.log('data emitted');
     });

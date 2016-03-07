@@ -13,6 +13,7 @@ var cpt=0;
 channel.subscribe('publishedFrame',function(frame){
     fs.writeFile(datefile, frame.date, function(err){
         if (err) throw err;
+        console.log(frame);
         console.log(frame.date+' successfully written.')
     });
 });

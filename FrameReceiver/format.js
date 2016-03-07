@@ -1,9 +1,8 @@
 /**
  * Created by deasel on 2016-03-03.
- */
-/*
+ *
  * Ce module recoit les trames GPS et en gère le format.
- * Il transforme la trame en forma data facilement exportable
+ * Il transforme la trame en format data facilement exportable
  */
 var Parser = require('binary-parser').Parser;
 
@@ -55,4 +54,3 @@ console.log(frameHeader.parse(buf));
 //**************************
 //Pour tester si le frameHeader
 //fonctionne, invoquer avec
-//'node infoNeigeTrame.js
