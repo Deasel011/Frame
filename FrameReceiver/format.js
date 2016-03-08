@@ -35,14 +35,14 @@ function parseFrame(request,callback){
  */
 exports.filterUdp = function(frame,callback){
     parseFrame(frame,function(){
-        if(arguments[0].OptionsByte!==131 //TODO : valider les types de trames a conserver avec Martin Roy
-            &&arguments[0]!==281
-            &&arguments[0]!==288
-               // ||arguments[0].Speed===0
-               // ||arguments[0].Heading===0
-                ){callback(false)}
+        if((arguments[0].OptionsByte===131 //TODO : valider les types de trames a conserver avec Martin Roy
+            ||arguments[0]===281
+            ||arguments[0]===288)
+                //&&arguments[0].Speed!==0
+                //&&arguments[0].Heading!==0
+                ){callback(arguments[0]);}
         else
-            callback(arguments[0]);
+            callback(false);
     })
 };
 
@@ -76,7 +76,7 @@ var frameHeader = new Parser()
     .array('User_Msg',{type:'uint8',length:'User_Msg_Length'})
 
 
-//**************************
+//************************** POUR DU TEST UNIQUEMENT // TODO : Enlever cette partie
 //var buf = new Buffer('8305466130557401010004000856B8AE9400000000000000000000000000000000000000000000000C02D0FFAD4F001F080001000C010A3030393630303036040D4F3D3E2B','hex')
 
 //console.log(frameHeader.parse(buf));
