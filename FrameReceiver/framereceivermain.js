@@ -1,6 +1,7 @@
 /**
  * Created by deasel on 2016-03-03.
  */
+//TODO : gestion d'erreur sans crash!
 /* Declarations and imports*/
 var dbWriter = require('./io/dbWriter.js');//fonctions appellées dans les events de canaux
 var http = require('http');//module http
