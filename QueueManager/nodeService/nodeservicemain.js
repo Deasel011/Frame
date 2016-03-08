@@ -10,6 +10,7 @@ var webService = http.createServer(function(req,res){
         res.end('Service for Pub/Sub server running on port '+server.port);
 }).listen(server.port);
 var io = require('socket.io').listen(webService);
+var funct = require('./funct.js');
 }
 
 /**
@@ -34,10 +35,18 @@ io.sockets.on('connection', function(instance){
      * message http au serveur pubsub
      */
     instance.on('getFromTime', function(data){
-        funct.getFromTime(Date.parse(Object.keys(data)[1]),function(){
-            arguments[0].forEach(function(err,doc){
-                connection.emit('newFrame',{channel: Object.keys(data)[0], frame: doc.toString()});
-            });
+        console.log(data.time);
+        console.log('allo');
+        funct.getFromTime(data.time,function(){
+            if(arguments[0]!=null){
+                connection.emit('newFrame',{channel: data.channel, frame: arguments[0]});
+            }
+
+
+            /*arguments[0].forEach(function(err,doc){
+                console.log('ici');
+                connection.emit('newFrame',{channel: data.channel, frame: doc.toString()});
+            });*/
         });
     });
 

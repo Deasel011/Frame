@@ -3,7 +3,11 @@
  */
 /* Declarations and imports*/{
     var MongoClient = require('mongodb').MongoClient;
-    var dbserver = require('./dbStorage.js')
+    var dbserver = require('./dbStorage.js');
+    var assert = require('assert');
+    var ioClient = require('socket.io-Client');
+    var server = require('./server.js');
+    var connection = ioClient.connect('http://'+server.host+':'+server.pubsubport);
 }
 
 module.exports = {
@@ -18,7 +22,17 @@ module.exports = {
      */
     getFromTime : function(dateISO, callback){
         MongoClient.connect(dbserver.url, function(err,db){
-            var cursor = db.find({"date":{ $gt: dateISO }},{"date":1,"frame":1,"id":0});
+            var cursor = db.collection('frame').find({"date":{ $gt: dateISO }},{"date":1,"frame":1,"id":0});
+            cursor.forEach(function(err,doc){
+                assert.equal(err,null);
+                if(doc!= null){
+                    console.log(doc);
+                    connection.emit('newFrame',{channel: data.channel, frame: doc});
+                } else {
+                    callback();
+                }
+            });
+
             db.close();
             callback(cursor);
         })

@@ -21,9 +21,13 @@ module.exports = {
      * @param channel = le canal sur lequel on veut diffuser les trames
      */
     getFromTime: function(time, channel){
-        ioClient.connect('http://'+server.host+':'+server.apiport);
-        ioClient.emit('getFromTime',{channel: channel,time: time});
-        ioClient.close();
+        console.log(time);
+        var connection = ioClient.connect('http://'+server.host+':'+server.apiport);
+        connection.emit('getFromTime',{channel: channel,time: time}, function(err){
+            if(err) throw err;
+            connection.close();
+            console.log('data emitted');
+        });
     },
     /**
      * Doc publish funtion.

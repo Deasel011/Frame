@@ -10,7 +10,7 @@ var PORT = 3001,
 function justRunIt(i){
     if(i%5===0&&i!==10000){console.log(i)}
 
-    if(i<50){
+    if(i<5){
         var message=randomBuffer();
         client.send(message,0,message.length,PORT,HOST,function(err,bytes){
             if(err)throw err;
@@ -24,7 +24,7 @@ function justRunIt(i){
 justRunIt(0);
 
 function randomBuffer(){
-    var buffer=new Buffer('8305466130557401010004000856B8AE9400000000000000000000000000000000000000000000000C02D0FFAD4F001F080001000C010A3030393630303036040D4F3D3E2B','hex');
+    var buffer=new Buffer('8305466130557401010004000856B8AE94000000000000000000000000000000000000000A0001000C02D0FFAD4F001F080001000C010A3030393630303036040D4F3D3E2B','hex');
     var isodate=(Math.floor(new Date().getTime()/1000));
     var time=isodate.toString(16);
     console.log(time);

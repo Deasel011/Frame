@@ -8,8 +8,6 @@ var datefile = "lastDate.txt";
 
 var channel = client.channel('accep');
 
-var cpt=0;
-
 channel.subscribe('publishedFrame',function(frame){
     fs.writeFile(datefile, frame.date, function(err){
         if (err) throw err;
@@ -17,3 +15,11 @@ channel.subscribe('publishedFrame',function(frame){
         console.log(frame.date+' successfully written.')
     });
 });
+
+readFile(function(){channel.publish('getFromTime',arguments[0])});
+
+function readFile(callback) {
+    fs.readFile(datefile,function(err,data){
+        callback(data.toString());
+    });
+}

@@ -6,16 +6,45 @@
  */
 var Parser = require('binary-parser').Parser;
 
-var exports=module.exports = {}
+var exports=module.exports = {};
 
-/* Prend en paramêtre un BUFFER contenant la trame sans le header UDP
- *Retourne dans un callback le résultat du buffer passer en requete
+/**
+ * Prend en paramêtre un BUFFER contenant la trame sans le header UDP
+ * Retourne dans un callback le résultat du buffer passer en requete
  */
 exports.parseFrame = function(request,callback){
 
     callback(frameHeader.parse(request));
-}
+};
 
+/**
+ * parseFrame interne
+ */
+function parseFrame(request,callback){
+
+    callback(frameHeader.parse(request));
+};
+
+/**
+ * Doc Filtration des trames
+ * Afin d'enlever les trames incompletes ou erronées
+ * arguments[0] est l'objet passer dans le callback
+ * de la fonction parseFrame(req,cb)
+ * 131, 281 et 288 est l'équivalent en decimal de 83, 119 et 120 en hexa
+ * et ce sont les trames que l'on veut conserver (a confirmer)
+ */
+exports.filterUdp = function(frame,callback){
+    parseFrame(frame,function(){
+        if(arguments[0].OptionsByte!==131 //TODO : valider les types de trames a conserver avec Martin Roy
+            &&arguments[0]!==281
+            &&arguments[0]!==288
+               // ||arguments[0].Speed===0
+               // ||arguments[0].Heading===0
+                ){callback(false)}
+        else
+            callback(arguments[0]);
+    })
+};
 
 var frameHeader = new Parser()
     .uint8('OptionsByte')
@@ -48,9 +77,9 @@ var frameHeader = new Parser()
 
 
 //**************************
-var buf = new Buffer('8305466130557401010004000856B8AE9400000000000000000000000000000000000000000000000C02D0FFAD4F001F080001000C010A3030393630303036040D4F3D3E2B','hex')
+//var buf = new Buffer('8305466130557401010004000856B8AE9400000000000000000000000000000000000000000000000C02D0FFAD4F001F080001000C010A3030393630303036040D4F3D3E2B','hex')
 
-console.log(frameHeader.parse(buf));
+//console.log(frameHeader.parse(buf));
 //**************************
 //Pour tester si le frameHeader
 //fonctionne, invoquer avec
