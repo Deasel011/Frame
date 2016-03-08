@@ -31,10 +31,10 @@ function randomBuffer(){
         //console.log(buffer[17]+buffer[18]+' : '+time[i]+time[i+1]);
         var concat=new Buffer(time[0]+time[1]+time[2]+time[3]+time[4]+time[5]+time[6]+time[7], 'hex');
     console.log(concat);
-        buffer[17]=concat[0];
-        buffer[18]=concat[1];
-        buffer[19]=concat[2];
-        buffer[20]=concat[3];
+        buffer[13]=concat[0];
+        buffer[14]=concat[1];
+        buffer[15]=concat[2];
+        buffer[16]=concat[3];
 
 
     console.log(buffer);

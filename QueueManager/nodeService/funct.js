@@ -21,20 +21,16 @@ module.exports = {
      * @param callback
      */
     getFromTime : function(dateISO, callback){
+
         MongoClient.connect(dbserver.url, function(err,db){
-            var cursor = db.collection('frame').find({"date":{ $gt: dateISO }},{"date":1,"frame":1,"id":0});
-            cursor.forEach(function(err,doc){
-                assert.equal(err,null);
-                if(doc!= null){
-                    console.log(doc);
+            db.collection('frame').find({"date":{ $gt: dateISO }},{"date":1,"frame":1,"id":0}).each(function(err,doc){
+                if(err) console.error(err);
+                console.log(doc);
+                if(doc!=null){
                     connection.emit('newFrame',{channel: data.channel, frame: doc});
-                } else {
-                    callback();
+                } else { callback();
                 }
             });
-
-            db.close();
-            callback(cursor);
         })
     }
 };

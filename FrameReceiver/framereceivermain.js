@@ -73,13 +73,13 @@ MongoClient.connect('mongodb://localhost:12345/frame', function (err,db) {
     udpserver.on('message', function (data, remote) {
         format.filterUdp(data,function(frame){
             if(frame) { //Si la trame passe le filtre, elle en renvoyé, si non, la valeur false est retournée
-                dbWriter.addData(db, frame.TimeOfFix, data, function () {
+                dbWriter.addData(db, frame.UpdateTime, data, function () {
                     console.log(frame);
                 });
 
                 //TODO : Ici, au lieu de renvoyer le DATA, nous allons envoyer la trame en format Frame deja parser
                 //  pour l'analyse spatiale à un service intermédiaire
-                connection.emit('bundledFrame', {date: frame.TimeOfFix, data: data}, function (err) {
+                connection.emit('bundledFrame', {date: frame.UpdateTime, data: data}, function (err) {
                     if (err)throw err;
                     console.log('data emitted');
                 });
