@@ -21,9 +21,18 @@ module.exports = {
      * @param callback
      */
     getFromTime : function(dateISO, callback){
-
         MongoClient.connect(dbserver.url, function(err,db){
-            db.collection('frame').find({"date":{ $gt: dateISO }},{"date":1,"frame":1,"id":0}).each(function(err,doc){
+            db.collection('frame').find({date:{ $gt: dateISO }},{"date":1,"frame":1,"id":0}).toArray(function(err,doc){
+                console.log(doc);
+            })
+        });
+
+
+
+
+        /*
+        MongoClient.connect(dbserver.url, function(err,db){
+            db.collection('frame').find({date:{ $gt: dateISO }},{"date":1,"frame":1,"id":0}).each(function(err,doc){
                 if(err) console.error(err);
                 console.log(doc);
                 if(doc!=null){
@@ -31,6 +40,6 @@ module.exports = {
                 } else { callback();
                 }
             });
-        })
+        })*/
     }
 };
