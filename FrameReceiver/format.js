@@ -23,7 +23,7 @@ exports.parseFrame = function(request,callback){
 function parseFrame(request,callback){
 
     callback(frameHeader.parse(request));
-};
+}
 
 /**
  * Doc Filtration des trames
@@ -73,13 +73,4 @@ var frameHeader = new Parser()
     .uint8('User_Msg_Route')
     .uint8('User_Msg_ID')
     .uint16('User_Msg_Length')
-    .array('User_Msg',{type:'uint8',length:'User_Msg_Length'})
-
-
-//************************** POUR DU TEST UNIQUEMENT // TODO : Enlever cette partie
-//var buf = new Buffer('8305466130557401010004000856B8AE9400000000000000000000000000000000000000000000000C02D0FFAD4F001F080001000C010A3030393630303036040D4F3D3E2B','hex')
-
-//console.log(frameHeader.parse(buf));
-//**************************
-//Pour tester si le frameHeader
-//fonctionne, invoquer avec
+    .array('User_Msg',{type:'uint8',length:'User_Msg_Length'});
