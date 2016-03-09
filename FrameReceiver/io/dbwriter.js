@@ -19,6 +19,7 @@
  */
 exports.addData = function(db, date, data, callback) {
     db.collection('frame').insert({
+
         date: date,
         frame: data.toString('hex')
     }, function (err, result) {
