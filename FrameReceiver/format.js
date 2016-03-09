@@ -4,7 +4,6 @@
  * Ce module recoit les trames GPS et en gère le format.
  * Il transforme la trame en format data facilement exportable
  */
-var Parser = require('binary-parser').Parser;
 var type83 = require('./frameType/type83parser.js');
 
 var exports = module.exports = {};
@@ -12,6 +11,7 @@ var exports = module.exports = {};
 /**
  * Prend en paramêtre un BUFFER contenant la trame sans le header UDP
  * Retourne dans un callback le résultat du buffer passer en requete
+ * TODO finir cette fonction comme celle de filtration au cas ou nous en aurions de besoin par apres... meme s'il n'est pas optimal de faire passer 2 fois le parser pour la meme trame dans le temps, il y a surement une meilleure solution!
  */
 exports.parseFrame = function (request, callback) {
 
@@ -30,31 +30,13 @@ exports.filterUdp = function (frame, callback) {
     console.log(frame[0]);
     switch (frame[0]) {
         case 131://83
-            type83.filterUdp(frame, function () {
-                if (arguments[0]) {
-                    callback(arguments[0]);
-                } else {
-                    callback(false);
-                }
-            });
+            callback(type83.filterUdp(frame,callback));
             break;
         case 281://119 TODO implémenté avec la logique
-            type281.filterUdp(frame, function () {
-                if (arguments[0]) {
-                    callback(arguments[0]);
-                } else {
-                    callback(false);
-                }
-            });
+            callback(type119.filterUdp(frame,callback));
             break;
         case 288://120 TODO implémenté avec la logique
-            type288.filterUdp(frame, function () {
-                if (arguments[0]) {
-                    callback(arguments[0]);
-                } else {
-                    callback(false);
-                }
-            });
+            callback(type120.filterUdp(frame,callback));
             break;
         default:
             console.log("Trame de type inconnu.");

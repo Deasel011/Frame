@@ -13,6 +13,7 @@ var exports=module.exports = {};
  * Retourne dans un callback le résultat du buffer passer en requete
  * On peut vouloir l'utiliser dans le cas de l'analyse spatiale qui
  * tirerais des trames directement à partir de la base de donnée storage
+ * TODO trouver une facon de ne jamais utiliser cette fonction avec une meilleure analyse.
  */
 exports.parseFrame = function(request,callback){
 
@@ -37,7 +38,7 @@ function parseFrame(request,callback){
  */
 exports.filterUdp = function(frame,callback){
     parseFrame(frame,function(){
-        if((arguments[0].OptionsByte===131 //TODO : valider les types de trames a conserver avec Martin Roy
+        if((arguments[0].OptionsByte===131 //TODO : valider les champs a vérifier
             ||arguments[0]===281
             ||arguments[0]===288)
         //&&arguments[0].Speed!==0
