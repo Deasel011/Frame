@@ -13,8 +13,6 @@ var webServer = http.createServer(function(req,res){
         res.end('Pub/Sub server running on port '+server.port);
     }).listen(server.port);//création du serveur http
 var io = require('socket.io').listen(webServer);//module pour recevoir des messages par socket
-//var ioClient = require('socket.io-client');//module pour envoyer des messages par socket
-var CHANNEL=['accep','prod','dev'];
 }
 
 /**
@@ -34,7 +32,9 @@ var CHANNEL=['accep','prod','dev'];
 io.sockets.on('connection', function(instance){
     /* Nouvelle trame individuelle */
     instance.on('newFrame', function(data){
-        funct.publish(Objects.keys(data)[0],Objects.keys(data)[1]);
+        var channel = client.channel(data.channel);
+        console.log(data);
+        funct.publish(channel,{date: data.date, frame: data.frame});
     });
     /* Nouvelle trame pour tout les canaux */
     instance.on('bundledFrame', function(data){
@@ -68,17 +68,17 @@ accep.subscribe('getFromTime', function(message){
  * *DEPRECATED* Doc emitFrames <channel>
  *     Envoie d'une trame à un canal en particulier
  */
-accep.subscribe('emitFrames', function(message){
+//accep.subscribe('emitFrames', function(message){
 //NOT NECESSARY
-});
+//});
 
 /**
  * *DEPRECATED* Doc publishFrame on newFrame <channel>
  *     Publie une trame sur le canal désigné
  */
-accep.subscribe('newFrame', function(message){
+/*accep.subscribe('newFrame', function(message){
     funct.publish(db.CHANNELS[0],message);
-});
+});*/
 
 
 /**
@@ -94,11 +94,7 @@ accep.on('error', function(){
 var devel = client.channel(db.CHANNELS[1], {size: 100000, max:500});
 
 devel.subscribe('getFromTime', function(message){
-
-});
-
-devel.subscribe('emitFrames', function(message){
-
+    funct.getFromTime(message,db.CHANNELS[1]);
 });
 
 devel.on('error', function(){
@@ -109,11 +105,7 @@ devel.on('error', function(){
 var produ = client.channel(db.CHANNELS[2], {size: 100000, max:500});
 
 produ.subscribe('getFromTime', function(message){
-
-});
-
-produ.subscribe('emitFrames', function(message){
-
+    funct.getFromTime(message,db.CHANNELS[2]);
 });
 
 produ.on('error', function(){

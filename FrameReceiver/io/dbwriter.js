@@ -7,11 +7,6 @@
     var assert = require('assert');
     var exports = module.exports ={};
 }
-var options = {
-    port: 12345,
-    host: 'localhost'
-};
-
 
 /**
  * Doc addData
@@ -23,10 +18,9 @@ var options = {
  * @param callback
  */
 exports.addData = function(db, date, data, callback) {
-    //console.log(data);
     db.collection('frame').insert({
         date: date,
-        frame: data
+        frame: data.toString('hex')
     }, function (err, result) {
         if (err === null) {
             callback("Insert Successfull!")

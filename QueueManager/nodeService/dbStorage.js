@@ -3,5 +3,5 @@
  */
 
 module.exports = {
-    'url': 'mongodb://localhost:12345/storage'
+    'url': 'mongodb://localhost:12345/frame'
 };

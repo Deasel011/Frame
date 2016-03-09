@@ -35,19 +35,7 @@ io.sockets.on('connection', function(instance){
      * message http au serveur pubsub
      */
     instance.on('getFromTime', function(data){
-        console.log(data.time);
-        console.log('allo');
-        funct.getFromTime(data.time,function(){
-            if(arguments[0]!=null){
-                connection.emit('newFrame',{channel: data.channel, frame: arguments[0]});
-            }
-
-
-            /*arguments[0].forEach(function(err,doc){
-                console.log('ici');
-                connection.emit('newFrame',{channel: data.channel, frame: doc.toString()});
-            });*/
-        });
+        funct.getFromTime(data.time,connection, data.channel);
     });
 
     /**
@@ -56,6 +44,7 @@ io.sockets.on('connection', function(instance){
      * (on limite les accès a pubsub aux clients de celui-ci et nodeService)
      */
     instance.on('bundledFrame', function(data){
+        console.log('bundle received');
         connection.emit('bundledFrame', data)
     })
 

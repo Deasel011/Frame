@@ -2,13 +2,14 @@
  * Created by deasel on 2016-03-03.
  */
 //TODO : gestion d'erreur sans crash!
-/* Declarations and imports*/
-var dbWriter = require('./io/dbWriter.js');//fonctions appellées dans les events de canaux
-var http = require('http');//module http
-var server = require('./server.js');//module qui contient les information du serveur http de pubsub
-var MongoClient = require('mongodb').MongoClient;
-var format = require('./format.js');//module qui contient les informations sur le format et qui permet de le parser
-var ioClient = require('socket.io-client');
+/* Declarations and imports*/{
+    var dbWriter = require('./io/dbWriter.js');//fonctions appellées dans les events de canaux
+    var http = require('http');//module http
+    var server = require('./server.js');//module qui contient les information du serveur http de pubsub
+    var MongoClient = require('mongodb').MongoClient;
+    var format = require('./format.js');//module qui contient les informations sur le format et qui permet de le parser
+    var ioClient = require('socket.io-client');
+}
 
 /**
  * Doc Connection Mongo
@@ -24,14 +25,15 @@ var ioClient = require('socket.io-client');
  */
 MongoClient.connect('mongodb://localhost:12345/frame', function (err,db) {
     if(err) throw err;
+    /* Déclaration du serveur http + socket par dessus */{
+        var webServer = http.createServer(function (req, res) {
+            res.writeHead(200, {'Content-Type': 'text/plain'});
+            res.end('FrameReceiver server running on port ' + server.port);
+        }).listen(server.port);//création du serveur http
+        var io = require('socket.io').listen(webServer);//module pour recevoir des messages par socket
+    }
 
-    var webServer = http.createServer(function (req, res) {
-        res.writeHead(200, {'Content-Type': 'text/plain'});
-        res.end('FrameReceiver server running on port ' + server.port);
-    }).listen(server.port);//création du serveur http
-    var io = require('socket.io').listen(webServer);//module pour recevoir des messages par socket
-    /* Déclarations pour réception UDP */
-    {
+    /* Déclarations pour réception UDP */{
         var PORT = 3001;
         var HOST = '127.0.0.1';
         var dgram = require('dgram');
@@ -48,15 +50,21 @@ MongoClient.connect('mongodb://localhost:12345/frame', function (err,db) {
     /**
      * Doc Listener
      * Réception par UDP des trames
+     *  + Détermination du port du listener UDP
+     */{
+        udpserver.on('listening', function () {
+            console.log('server listening on UDP port 3001');
+        });
+
+        udpserver.bind(PORT, HOST);//détermination du port du listener UDP
+    }
+
+    /**
+     * Doc Connection
+     * Connexion pour emettre des messages http au serveur nodeService du
+     * queue manager
      */
-    udpserver.on('listening', function () {
-        console.log('server listening on UDP port 3001');
-    });
-
-    udpserver.bind(PORT, HOST);//détermination du port du listener UDP
-
-    var connection = ioClient.connect('http://' + server.host + ':' + server.serviceport);//Connexion pour emettre des
-                                                                //messages http au serveur nodeService du queue manager
+    var connection = ioClient.connect('http://' + server.host + ':' + server.serviceport);
 
     /**
      * Doc listener message UDP
@@ -74,14 +82,13 @@ MongoClient.connect('mongodb://localhost:12345/frame', function (err,db) {
         format.filterUdp(data,function(frame){
             if(frame) { //Si la trame passe le filtre, elle en renvoyé, si non, la valeur false est retournée
                 dbWriter.addData(db, frame.UpdateTime, data, function () {
-                    console.log(frame);
+                    console.log("Write done");
                 });
 
                 //TODO : Ici, au lieu de renvoyer le DATA, nous allons envoyer la trame en format Frame deja parser
                 //  pour l'analyse spatiale à un service intermédiaire
-                connection.emit('bundledFrame', {date: frame.UpdateTime, data: data}, function (err) {
+                connection.emit('bundledFrame', {date: frame.UpdateTime, frame: data.toString('hex')}, function (err) {
                     if (err)throw err;
-                    console.log('data emitted');
                 });
 
             }
