@@ -9,6 +9,26 @@
     var MongoClient = require('mongodb').MongoClient;
     var format = require('./format.js');//module qui contient les informations sur le format et qui permet de le parser
     var ioClient = require('socket.io-client');
+    var bunyan = require('bunyan');
+    var log = bunyan.createLogger({
+        name: 'frameReceiver',
+        streams: [
+            {
+                level: 'info',
+                stream: process.stdout
+            },{
+                level: 'error',
+                path: 'error.log'
+            },{
+                level: 'warn',
+                path: 'warning.log'
+            },{
+                level: 'fatal',
+                path: 'fatalErrors.log'
+            }
+        ]
+    })
+    var isConnected = true;
 }
 
 /**
@@ -23,8 +43,10 @@
  * mais lire la documentation spécifique pour voir s'il n'y a pas de facon plus
  * simple!
  */
-MongoClient.connect('mongodb://localhost:12345/frame', function (err,db) {
-    if(err) throw err;
+var connectMongo = MongoClient.connect('mongodb://localhost:12345/frame', function (err,db) {
+    if(err) {log.error(err);isConnected=false;}
+    if(!err) {isConnected = true;}
+
     /* Déclaration du serveur http + socket par dessus */{
         var webServer = http.createServer(function (req, res) {
             res.writeHead(200, {'Content-Type': 'text/plain'});
@@ -64,7 +86,9 @@ MongoClient.connect('mongodb://localhost:12345/frame', function (err,db) {
      * Connexion pour emettre des messages http au serveur nodeService du
      * queue manager
      */
-    var connection = ioClient.connect('http://' + server.host + ':' + server.serviceport);
+    var connection = ioClient.connect('http://' + server.host + ':' + server.serviceport,function(err){
+        if(err) log.error(err);
+    });
 
     /**
      * Doc listener message UDP
@@ -79,16 +103,18 @@ MongoClient.connect('mongodb://localhost:12345/frame', function (err,db) {
      * Si le filtre passe, nous allons envoyer la trame au prochain service TODO : service d'analyse spatiale
      */
     udpserver.on('message', function (data, remote) {
+        if(!isConnected){connectMongo;}//Fonction Inline pour recommencer un nouveau pool si la connexion à la DB a crasher précédemment.
         format.filterUdp(data,function(frame){
             if(frame) { //Si la trame passe le filtre, elle en renvoyé, si non, la valeur false est retournée
-                dbWriter.addData(db, frame.UpdateTime, data, function () {
-                    console.log("Write done");
+                dbWriter.addData(db, frame.UpdateTime, data, function (err,result) {
+                    if(err)log.error(err);
+                    if(result)log.info(result);
                 });
 
                 //TODO : Ici, au lieu de renvoyer le DATA, nous allons envoyer la trame en format Frame deja parser
                 //  pour l'analyse spatiale à un service intermédiaire
                 connection.emit('bundledFrame', {date: frame.UpdateTime, frame: data.toString('hex')}, function (err) {
-                    if (err)throw err;
+                    if (err){log.error(err)}
                 });
 
             }

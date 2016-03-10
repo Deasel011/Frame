@@ -18,15 +18,19 @@
  * @param callback
  */
 exports.addData = function(db, date, data, callback) {
-    db.collection('frame').insert({
+    if(db) {
+        db.collection('frame').insert({
 
-        date: date,
-        frame: data.toString('hex')
-    }, function (err, result) {
-        if (err === null) {
-            callback("Insert Successfull!")
-        } else {
-            callback("Insert Failed :(")
-        }
-    });
+            date: date,
+            frame: data.toString('hex')
+        }, function (err, result) {
+            if (err === null) {
+                callback(null, "Insert Successfull!")
+            } else {
+                callback("Insert Failed", null)
+            }
+        });
+    } else {
+        callback("No connection, abort write function", null);
+    }
 };
