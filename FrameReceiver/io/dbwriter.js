@@ -27,10 +27,8 @@ exports.addData = function(db, date, data, callback) {
             if (err === null) {
                 callback(null, "Insert Successfull!")
             } else {
-                callback("Insert Failed", null)
+                callback(err, null)
             }
         });
-    } else {
-        callback("No connection, abort write function", null);
     }
 };

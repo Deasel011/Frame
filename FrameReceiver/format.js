@@ -27,7 +27,6 @@ exports.parseFrame = function (request, callback) {
  * et ce sont les trames que l'on veut conserver (a confirmer)
  */
 exports.filterUdp = function (frame, callback) {
-    console.log(frame[0]);
     switch (frame[0]) {
         case 131://83
             callback(type83.filterUdp(frame,callback));
