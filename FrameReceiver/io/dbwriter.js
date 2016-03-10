@@ -25,7 +25,7 @@ exports.addData = function(db, date, data, callback) {
             frame: data.toString('hex')
         }, function (err, result) {
             if (err === null) {
-                callback(null, "Insert Successfull!")
+                callback(null, "Insert Successfull!") // le premier argument du callback est err, le deuxieme est une variable X (ici le résultat! en string!)
             } else {
                 callback(err, null)
             }
