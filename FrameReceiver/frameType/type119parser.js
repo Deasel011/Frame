@@ -35,7 +35,7 @@ function parseFrame(request,callback){
  */
 exports.filterUdp = function(frame,callback){
     parseFrame(frame,function(){
-        if((arguments[0].Speed!==0
+        if((arguments[0].Speed!==0)
                 //&&arguments[0].Heading!==0
             ){callback(arguments[0]);}
         else
@@ -52,18 +52,18 @@ exports.filterUdp = function(frame,callback){
  */
 
 function getValue(objectX){//objectX peut être la trame au complet, et selon sa longueur totale, on peut savoir combien de champs il va y avoir a parser, donc dans les choix, on peut préparer tout les cas!
-    return valueY;
+    return 1;
 }
-var choice1 = ;
-var choice2 = ;
+var choice1 = {};
+var choice2 = {};
 
 var frameHeader = new Parser()
     .uint8('ID')
     .choice('data',{
-        tag: getValue(objectX),
+        tag: getValue('a'),
         choices:{
-            a: choice1,
-            b: choice2
+            1: choice1,
+            2: choice2
         }
     })
     .uint8('checksum');

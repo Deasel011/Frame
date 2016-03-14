@@ -7,7 +7,6 @@
     var http = require('http');//module http
     var server = require('./server.js');//module qui contient les information du serveur http de pubsub
     var dbUrl = require('./server.js').dburl;
-    var MongoClient = require('mongodb').MongoClient;
     var format = require('./frameType/genericParser.js');//module qui contient les informations sur le format et qui permet de le parser
     var ioClient = require('socket.io-client');
     var bunyan = require('bunyan');
@@ -33,7 +32,6 @@
         res.end('FrameReceiver server running on port ' + server.port);
     }).listen(server.port);//création du serveur http
     var io = require('socket.io').listen(webServer);//module pour recevoir des messages par socket
-    var isConnected = false;
 }
 
 /**
@@ -48,58 +46,8 @@
  * mais lire la documentation spécifique pour voir s'il n'y a pas de facon plus
  * simple!
  */
-function connectDb(dbUrl ,callback){
-    dbWriter.connect(connectionCallback());
-  /*  if (err) {
-        log.error(err);
-        setTimeout(function () {
-            emitter.emit('retryConnection')
-        }, 5000);
-    } //Logging des erreurs de connection, si ne fonctionne pas, lance l'erreur en question. Lorsque l'erreur est lancée, on met isConnected a false
-    else {
-        emitter.addListener('dbAdd', function (frame, data) {
-                dbWriter.addData(db, frame.UpdateTime, data, function (err, result) {
-                    if (err) {
-                        log.error(err);
-                    }
-                    if (result) {
-                        log.info(result);
-                    }
-                })
-            }
-        )
-    }*/
-};
-
-function connectionCallback(){
-    var err = arguments[0];
-    var db = arguments[1];
-    if (err) {
-        log.error(err);
-        setTimeout(function () {
-            emitter.emit('retryConnection')
-        }, 5000);
-    } //Logging des erreurs de connection, si ne fonctionne pas, lance l'erreur en question. Lorsque l'erreur est lancée, on met isConnected a false
-    else {
-        emitter.addListener('dbAdd', function (frame, data) {
-                dbWriter.addData(db, frame.UpdateTime, data, function (err, result) {
-                    if (err) {
-                        log.error(err);
-                    }
-                    if (result) {
-                        log.info(result);
-                    }
-                })
-            }
-        )
-    }
-}
-/*
-function connectDb() {
-    dbWriter.connect(, {
-        retryMiliSeconds: 5000,
-        numberOfRetries: 200
-    }, function (err, db) {
+function connectDb(dbUrl) {
+    dbWriter.connect(function (err, db) {
         if (err) {
             log.error(err);
             setTimeout(function () {
@@ -119,10 +67,10 @@ function connectDb() {
                 }
             )
         }
-    });
-}*/
-connectDb(dbUrl,connectionCallback());
-emitter.addListener('retryConnection', function(){connectDb(dbUrl,connectionCallback(err,db))});
+    })
+}
+connectDb(dbUrl);
+emitter.addListener('retryConnection', function(){connectDb(dbUrl)});
 
 /* Déclarations pour réception UDP */{
     var PORT = 3001;

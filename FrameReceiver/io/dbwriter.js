@@ -8,22 +8,6 @@
     var dbUrl = require('../server.js').dburl;
     var dbtype = require('../server.js').dbtype;
     var mongoWriter = require('./mongoWriter.js');
-    var bunyan = require('bunyan');
-    var log = bunyan.createLogger({
-        name: 'dbWriter',
-        streams: [
-            {
-                level: 'info',
-                stream: process.stdout
-            }, {
-                level: 'error',
-                path: 'error.log'
-            }, {
-                level: 'fatal',
-                path: 'fatalErrors.log'
-            }
-        ]
-    });
 }
 
 /**
@@ -36,29 +20,21 @@
  * @param callback
  */
 exports.addData = function(db, date, data, callback) {
-    if(db) {
-        db.collection('frame').insert({
-
-            date: date,
-            frame: data.toString('hex')
-        }, function (err, result) {
-            if (err === null) {
-                callback(null, "Insert Successfull!");// le premier argument du callback est err, le deuxieme est une variable X (ici le résultat! en string!)
-            } else {
-                callback(err, null)
-            }
-        });
+    switch(dbtype){
+        case 'mongo':
+            callback(mongoWriter.addData(db,date,data,callback));
+            break;
+        default: callback('dbType unrecognized', null);
+            break;
     }
 };
 
 exports.connect = function(callback){
     switch(dbtype){
-        case 'mongo': mongoWriter.connect(dbUrl,function(err,db){
-            callback(err,db);
-        });
+        case 'mongo':
+            callback(mongoWriter.connect(dbUrl,callback));
             break;
         default: callback('dbType unrecognized', null);
             break;
     }
-
-}
+};
