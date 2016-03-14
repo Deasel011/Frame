@@ -3,27 +3,9 @@
  */
 
 /* Declarations and imports*/{
+    var MongoClient = require('mongodb').MongoClient;
     var assert = require('assert');
     var exports = module.exports ={};
-    var dbUrl = require('../server.js').dburl;
-    var dbtype = require('../server.js').dbtype;
-    var mongoWriter = require('./mongoWriter.js');
-    var bunyan = require('bunyan');
-    var log = bunyan.createLogger({
-        name: 'dbWriter',
-        streams: [
-            {
-                level: 'info',
-                stream: process.stdout
-            }, {
-                level: 'error',
-                path: 'error.log'
-            }, {
-                level: 'fatal',
-                path: 'fatalErrors.log'
-            }
-        ]
-    });
 }
 
 /**
@@ -51,14 +33,11 @@ exports.addData = function(db, date, data, callback) {
     }
 };
 
-exports.connect = function(callback){
-    switch(dbtype){
-        case 'mongo': mongoWriter.connect(dbUrl,function(err,db){
-            callback(err,db);
-        });
-            break;
-        default: callback('dbType unrecognized', null);
-            break;
-    }
-
-}
+exports.connect = function(url, callback){
+    MongoClient.connect(url, {
+        retryMiliSeconds: 5000,
+        numberOfRetries: 200
+    }, function (err, db) {
+        callback(err,db);
+    })
+};
