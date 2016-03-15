@@ -3,7 +3,7 @@
  */
 //TODO : gestion d'erreur sans crash!
 /* Declarations and imports*/{
-    var dbWriter = require('./io/dbWriter.js');//fonctions appellées dans les events de canaux
+    var dbWriter = require('./databaseWrite/dbWriter.js');//fonctions appellées dans les events de canaux
     var http = require('http');//module http
     var server = require('./server.js');//module qui contient les information du serveur http de pubsub
     var dbUrl = require('./server.js').dburl;
@@ -35,16 +35,13 @@
 }
 
 /**
- * Doc Connection Mongo
+ * Doc Connection DbWriter
  * Afin de ne pas créer de traffic excessif, nous créons un pool afin de faire toutes
- * les requêtes d'écritures. Pour utiliser le pool, il faut tout entrer la logique
- * de serveur à l'intérieur de la fonction callback du client de connection!
- * C'est pourquoi le webserveur est instancié à l'intérieur du callback de la
- * connection!
- *
- * Pour créer un pool avec une autre base de donnée, procédé de la même facon,
- * mais lire la documentation spécifique pour voir s'il n'y a pas de facon plus
- * simple!
+ * les requêtes d'écritures.
+ * Il est possible de brancher la logique de connection/écriture sur une autre base
+ * de donnée. Pour ce faire, ajouter dans le module IO du code javascript pour la
+ * connecter a une autre BD puis ajouter l'information! Utiliser le canevas de base
+ * MongoWriter comme exemple. TODO rajouter un modèle avec oracle
  */
 function connectDb(dbUrl) {
     dbWriter.connect(function (err, db) {
@@ -137,3 +134,4 @@ udpserver.on('message', function (data, remote) {
         }
     });
 });
+

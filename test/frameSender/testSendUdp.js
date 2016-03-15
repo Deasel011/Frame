@@ -10,7 +10,7 @@ var PORT = 3001,
 function justRunIt(i){
     if(i%5===0&&i!==10000){console.log(i)}
 
-    if(i<5){
+    if(i<10000){
         var message=randomBuffer();
         client.send(message,0,message.length,PORT,HOST,function(err,bytes){
             if(err)throw err;

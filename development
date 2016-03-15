@@ -1,0 +1,23 @@
+[
+  {
+    //Frame Receiver
+    "uid":"frameReceiver",
+    "append":true,
+    "watch":true,
+    "script":"/FrameReceiver/framereceivermain.js"
+  },
+  {
+    //Node Service
+    "uid":"nodeServiceToPubSub",
+    "append":true,
+    "watch":true,
+    "script":"/QueueManager/nodeService/nodeservicemain.js"
+  },
+  {
+    //PubSub
+    "uid":"pubsub",
+    "append":true,
+    "watch":true,
+    "script":"/QueueManager/pubsub/pubsubmain.js"
+  }
+]

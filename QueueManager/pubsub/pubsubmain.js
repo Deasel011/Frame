@@ -65,23 +65,6 @@ accep.subscribe('getFromTime', function(message){
 });
 
 /**
- * *DEPRECATED* Doc emitFrames <channel>
- *     Envoie d'une trame à un canal en particulier
- */
-//accep.subscribe('emitFrames', function(message){
-//NOT NECESSARY
-//});
-
-/**
- * *DEPRECATED* Doc publishFrame on newFrame <channel>
- *     Publie une trame sur le canal désigné
- */
-/*accep.subscribe('newFrame', function(message){
-    funct.publish(db.CHANNELS[0],message);
-});*/
-
-
-/**
  * Doc error <channel>
  *     Comportement du serveur lorsque survient une erreur
  */
