@@ -2,15 +2,15 @@
  * Created by deasel on 2016-03-03.
  */
 
-var PORT = 3001,
-    HOST = '127.0.0.1',
+var PORT = 32769,
+    HOST = '192.168.99.100',
     dgram = require('dgram'),
     client=dgram.createSocket('udp4');
 
 function justRunIt(i){
     if(i%5===0&&i!==10000){console.log(i)}
 
-    if(i<10000){
+    if(i<5){
         var message=randomBuffer();
         client.send(message,0,message.length,PORT,HOST,function(err,bytes){
             if(err)throw err;

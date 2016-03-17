@@ -25,7 +25,7 @@ module.exports = {
             db.collection('frame').find({date: {$gt: parseInt(dateISO)}}).each(function(err,doc){
                 if(doc!==null) {
                     console.log(doc);
-                    connection.emit('newFrame', {channel: channel, date: doc.date, frame: doc.frame});
+                    connection.emit('newFrame', JSON.stringify({channel: channel, date: doc.date, frame: doc.frame}));
                 }
             })
         });

@@ -16,7 +16,7 @@ amqp.connect('amqp://localhost',function(err,conn){
     conn.createChannel(function(err,ch){
         var ex = 'frame';
 
-        ch.assertExchange(ex,'fanout',{durable:true,persistent:true});
+        ch.assertExchange(ex,'fanout',{durable:true});
 
 
 
@@ -28,8 +28,9 @@ amqp.connect('amqp://localhost',function(err,conn){
         io.sockets.on('connection', function(instance){
             /* Nouvelle trame */
             instance.on('bundledFrame', function(data){
-                ch.publish(ex,'',data);
-                console.log("[x] Sent %s"+ data )
+                console.log(data);
+                ch.publish(ex,'',new Buffer(JSON.stringify(data)));
+                console.log("[x] Sent %s"+ JSON.stringify(data))
             });
         });
 

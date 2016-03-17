@@ -10,13 +10,14 @@ amqp.connect('amqp://localhost', function(err,conn){
     conn.createChannel(function(err,ch){
         var ex = 'frame';
 
-        ch.assertExchange(ex,'fanout',{durable:true,persistent:true});
+        ch.assertExchange(ex,'fanout',{durable:true});
 
-        ch.assertQueue('accep',{persistent:true,durable:true},function(err,q){
+        ch.assertQueue('accep',{durable:true},function(err,q){
             ch.bindQueue(q.queue,ex,'accep');
 
-            ch.consume(q.queue, function(data){
-                console.log(data+'\n'+'Successfully received.')
+            ch.consume(q.queue, function(msg){
+                console.log(JSON.parse(msg.content).frame+'\n'+'Successfully received.');
+                ch.ack(msg);
             },{noAck:false});
         });
 

@@ -4,7 +4,9 @@
  * Ce module recoit les trames GPS et en gère le format.
  * Il transforme la trame en format data facilement exportable
  */
-var type83 = require('./frameType/type83parser.js');
+var type83 = require('./type83parser.js');
+var type119 = require('./type119parser.js');
+var type120 = require('./type120parser.js');
 
 var exports = module.exports = {};
 
@@ -42,3 +44,4 @@ exports.filterUdp = function (frame, callback) {
             break;
     }
 };
+

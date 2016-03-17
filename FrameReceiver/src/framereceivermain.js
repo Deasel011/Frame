@@ -3,11 +3,11 @@
  */
 //TODO : gestion d'erreur sans crash!
 /* Declarations and imports*/{
-    var dbWriter = require('./databaseWrite/dbWriter.js');//fonctions appellées dans les events de canaux
+    var dbWriter = require('./dbwriter');//fonctions appellées dans les events de canaux
     var http = require('http');//module http
     var server = require('./server.js');//module qui contient les information du serveur http de pubsub
     var dbUrl = require('./server.js').dburl;
-    var format = require('./frameType/genericParser.js');//module qui contient les informations sur le format et qui permet de le parser
+    var format = require('./frametype');//module qui contient les informations sur le format et qui permet de le parser
     var ioClient = require('socket.io-client');
     var bunyan = require('bunyan');
     var log = bunyan.createLogger({
@@ -18,10 +18,10 @@
                 stream: process.stdout
             }, {
                 level: 'error',
-                path: 'error.log'
+                path: '../error.log'
             }, {
                 level: 'fatal',
-                path: 'fatalErrors.log'
+                path: '../fatalErrors.log'
             }
         ]
     });
@@ -43,6 +43,10 @@
  * connecter a une autre BD puis ajouter l'information! Utiliser le canevas de base
  * MongoWriter comme exemple. TODO rajouter un modèle avec oracle
  */
+function getConnectionInstance(dbUrl){//mettre en singleton l'instance connectDB car il peut y avoir des problèmes de connections
+
+}
+
 function connectDb(dbUrl) {
     dbWriter.connect(function (err, db) {
         if (err) {
@@ -51,11 +55,12 @@ function connectDb(dbUrl) {
                 emitter.emit('retryConnection')
             }, 5000);
         } //Logging des erreurs de connection, si ne fonctionne pas, lance l'erreur en question. Lorsque l'erreur est lancée, on met isConnected a false
-        else {
+        else if (err === null) {
             emitter.addListener('dbAdd', function (frame, data) {
                     dbWriter.addData(db, frame.UpdateTime, data, function (err, result) {
                         if (err) {
                             log.error(err);
+                            if(err.message==="topology was destroyed"){db.close(); emitter.emit('retryConnection');}
                         }
                         if (result) {
                             log.info(result);
