@@ -32,6 +32,7 @@
         res.end('FrameReceiver server running on port ' + server.port);
     }).listen(server.port);//création du serveur http
     var io = require('socket.io').listen(webServer);//module pour recevoir des messages par socket
+    var isConnected=false;
 }
 
 /**
@@ -44,9 +45,9 @@
  * MongoWriter comme exemple. TODO rajouter un modèle avec oracle
  */
 function getConnectionInstance(dbUrl){//mettre en singleton l'instance connectDB car il peut y avoir des problèmes de connections
-
+    isConnected=true;
+    connectDb(dbUrl);
 }
-
 function connectDb(dbUrl) {
     dbWriter.connect(function (err, db) {
         if (err) {
@@ -71,12 +72,12 @@ function connectDb(dbUrl) {
         }
     })
 }
-connectDb(dbUrl);
-emitter.addListener('retryConnection', function(){connectDb(dbUrl)});
-
+connectDb(dbUrl);//TODO Supporte que la BD ne soit pas up en même temps que le service, cependant, si la BD plante, la reconnection doit etre automatisée
+emitter.addListener('retryConnection', function () {
+    connectDb(dbUrl);
+});
 /* Déclarations pour réception UDP */{
     var PORT = 3001;
-    var HOST = '127.0.0.1';
     var dgram = require('dgram');
     var udpserver = dgram.createSocket('udp4');
 }
@@ -95,10 +96,10 @@ emitter.addListener('retryConnection', function(){connectDb(dbUrl)});
  */
 {
     udpserver.on('listening', function () {
-        console.log('server listening on UDP port 3001');
+        console.log('server listening on '+udpserver.address().address+':'+udpserver.address().port);
     });
 
-    udpserver.bind(PORT, HOST);//détermination du port du listener UDP
+    udpserver.bind(PORT);//détermination du port du listener UDP
 }
 
 /**
@@ -123,6 +124,7 @@ var connection = ioClient.connect('http://' + server.host + ':' + server.service
  * Si le filtre passe, nous allons envoyer la trame au prochain service TODO : service d'analyse spatiale
  */
 udpserver.on('message', function (data, remote) {
+    console.log('Received some message via UDP');
     format.filterUdp(data, function (frame) {
         if (frame) { //Si la trame passe le filtre, elle en renvoyé, si non, la valeur false est retournée
             emitter.emit('dbAdd', frame, data);
