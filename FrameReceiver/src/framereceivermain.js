@@ -1,7 +1,7 @@
 /**
  * Created by deasel on 2016-03-03.
  */
-//TODO : gestion d'erreur sans crash!
+///TODO : gestion d'erreur sans crash!
 /* Declarations and imports*/{
     var dbWriter = require('./dbwriter');//fonctions appellées dans les events de canaux
     var http = require('http');//module http
@@ -33,6 +33,7 @@
     }).listen(server.port);//création du serveur http
     var io = require('socket.io').listen(webServer);//module pour recevoir des messages par socket
     var isConnected=false;
+    var PORT = require('./server').uPortListen;//numero du port pour le listener UDP!
 }
 
 /**
@@ -44,10 +45,6 @@
  * connecter a une autre BD puis ajouter l'information! Utiliser le canevas de base
  * MongoWriter comme exemple. TODO rajouter un modèle avec oracle
  */
-function getConnectionInstance(dbUrl){//mettre en singleton l'instance connectDB car il peut y avoir des problèmes de connections
-    isConnected=true;
-    connectDb(dbUrl);
-}
 function connectDb(dbUrl) {
     dbWriter.connect(function (err, db) {
         if (err) {
@@ -61,7 +58,7 @@ function connectDb(dbUrl) {
                     dbWriter.addData(db, frame.UpdateTime, data, function (err, result) {
                         if (err) {
                             log.error(err);
-                            if(err.message==="topology was destroyed"){db.close(); emitter.emit('retryConnection');}
+                            //if(err.message==="topology was destroyed"){db.close(); emitter.emit('retryConnection');}
                         }
                         if (result) {
                             log.info(result);
@@ -77,7 +74,6 @@ emitter.addListener('retryConnection', function () {
     connectDb(dbUrl);
 });
 /* Déclarations pour réception UDP */{
-    var PORT = 3001;
     var dgram = require('dgram');
     var udpserver = dgram.createSocket('udp4');
 }

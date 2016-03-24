@@ -3,7 +3,7 @@
  */
 
 var PORT = 3001,
-    HOST = '192.168.99.100',
+    HOST = '127.0.0.1',
     dgram = require('dgram'),
     client=dgram.createSocket('udp4');
 

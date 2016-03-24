@@ -34,10 +34,11 @@ exports.addData = function(db, date, data, callback) {
 };
 
 exports.connect = function(url, callback){
-    MongoClient.connect(url, {
-        retryMiliSeconds: 5000,
-        numberOfRetries: 200
-    }, function (err, db) {
-        callback(err,db);
-    })
+        MongoClient.connect(url, {
+            retryMiliSeconds: 5000,
+            numberOfRetries: 200
+        }, function (err, db) {
+            database = db;
+            callback(err, db);
+        })
 };

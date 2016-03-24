@@ -7,5 +7,6 @@ module.exports = {
     'port': '6004',
     'serviceport': '6002',
     'dbtype':'mongo',
-    'dburl': 'mongodb://mongo:27017/frame'
+    'dburl': 'mongodb://127.0.0.1:27017/frame',
+    'uPortListen': '3001'
 };
