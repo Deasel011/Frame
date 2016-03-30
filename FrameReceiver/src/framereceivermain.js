@@ -103,8 +103,9 @@ emitter.addListener('retryConnection', function () {
  * Connexion pour emettre des messages http au serveur nodeService du
  * queue manager
  */
-var connection = ioClient.connect('http://' + server.host + ':' + server.serviceport, function (err) {
+var connection = ioClient.connect('http://' + server.servicehost + ':' + server.serviceport, function (err) {
     if (err) log.error(err);
+    console.log("Connected to frame service on "+server.servicehost+":"+server.serviceport);
 });
 
 /**

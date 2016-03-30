@@ -5,5 +5,6 @@
 module.exports = {
     'port': '6002',
     'host': '127.0.0.1',
-    'pubsubport':'6003'
+    'exchangehost':'exchange',
+    'exchangeport':'6003'
 }

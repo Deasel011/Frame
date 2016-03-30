@@ -7,7 +7,7 @@ var server = require('./server.js');
 var ioClient = require('socket.io-client');
 var webService = http.createServer(function(req,res){
         res.writeHead(200,{'Content-Type':'text/plain'});
-        res.end('Service for Pub/Sub server running on port '+server.port);
+        res.end('Service for Exchange server running on port '+server.port);
 }).listen(server.port);
 var io = require('socket.io').listen(webService);
 var funct = require('./funct.js');
@@ -15,10 +15,10 @@ var funct = require('./funct.js');
 
 /**
  *  Doc connections http
- *  Un client se connecte au pubsub en http
+ *  Un client se connecte au exchange en http
  *  Un serveur http recoit la 'layer' socket pour recevoir des messages
  */
-var connection = ioClient.connect('http://'+server.host+':'+server.pubsubport);
+var connection = ioClient.connect('http://exchange:'+server.exchangeport);
 
 /**
  * Doc message listener
