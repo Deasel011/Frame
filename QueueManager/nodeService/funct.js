@@ -5,9 +5,9 @@
     var MongoClient = require('mongodb').MongoClient;
     var dbserver = require('./dbStorage.js');
     var assert = require('assert');
-    var ioClient = require('socket.io-Client');
+    //var ioClient = require('socket.io-client');
     var server = require('./server.js');
-    var connection = ioClient.connect('http://'+server.host+':'+server.pubsubport);
+    //var connection = ioClient.connect('http://'+server.host+':'+server.pubsubport);
 }
 
 module.exports = {

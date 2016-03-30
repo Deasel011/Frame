@@ -105,7 +105,6 @@ emitter.addListener('retryConnection', function () {
  */
 var connection = ioClient.connect('http://' + server.servicehost + ':' + server.serviceport, function (err) {
     if (err) log.error(err);
-    console.log("Connected to frame service on "+server.servicehost+":"+server.serviceport);
 });
 
 /**
