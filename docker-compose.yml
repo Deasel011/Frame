@@ -1,0 +1,32 @@
+framereceiver:
+  image: deasel011/framereceiver:0.1.7
+  ports:
+    - "3001:3001"
+    - "3001:3001/udp"
+    - "6004:6004"
+  links:
+    - mongo:mongo
+    - service:service
+mongo:
+  image: mongo
+  ports:
+    - "27017:27017"
+service:
+  image: deasel011/frameservice:0.0.3
+  ports:
+    - "6002:6002"
+  links:
+    - exchange:exchange
+exchange:
+  image: deasel011/framexchange:0.0.3
+  ports:
+    - "6003:6003"
+  links:
+    - rabbitmq:rabbitmq
+rabbitmq:
+  image: rabbitmq
+  ports:
+    - "4369:4369"
+    - "5671:5671"
+    - "5672:5672"
+    - "25672:25672"
