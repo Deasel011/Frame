@@ -16,7 +16,7 @@ amqp.connect('amqp://192.168.99.100', function(err,conn){
             ch.bindQueue(q.queue,ex,'accep');
 
             ch.consume(q.queue, function(msg){
-                console.log(JSON.parse(msg.content).frame+'\n'+'Successfully received.');
+                console.log(msg.content+'\n'+'Successfully received.');
                 ch.ack(msg);
             },{noAck:false});
         });

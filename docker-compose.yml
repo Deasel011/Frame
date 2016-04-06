@@ -1,5 +1,5 @@
 framereceiver:
-  image: deasel011/framereceiver:0.1.7
+  image: deasel011/framereceiver:0.1.8
   ports:
     - "3001:3001"
     - "3001:3001/udp"

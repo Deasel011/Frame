@@ -125,10 +125,11 @@ udpserver.on('message', function (data, remote) {
         if (frame) { //Si la trame passe le filtre, elle en renvoyé, si non, la valeur false est retournée
             emitter.emit('dbAdd', frame, data);
 
+            console.log(JSON.stringify(frame));
 
             //TODO : Ici, au lieu de renvoyer le DATA, nous allons envoyer la trame en format Frame deja parser
             //  pour l'analyse spatiale à un service intermédiaire
-            connection.emit('bundledFrame', {date: frame.UpdateTime, frame: data.toString('hex')}, function (err) {
+            connection.emit('bundledFrame', frame, function (err) {
                 if (err) {
                     log.error(err)
                 }
